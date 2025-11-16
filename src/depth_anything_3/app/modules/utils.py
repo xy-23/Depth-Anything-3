@@ -19,15 +19,13 @@ This module contains helper functions for data processing, visualization,
 and file operations.
 """
 
- 
+
 import json
 import os
 import shutil
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple
 import numpy as np
- 
-
 
 def create_depth_visualization(depth: np.ndarray) -> Optional[np.ndarray]:
     """

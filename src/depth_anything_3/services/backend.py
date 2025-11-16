@@ -22,12 +22,12 @@ import os
 import posixpath
 import time
 import uuid
- 
+
 from concurrent.futures import ThreadPoolExecutor
 from typing import Any, Dict, List, Optional
 from urllib.parse import quote
 import numpy as np
- 
+
 import uvicorn
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse, HTMLResponse
