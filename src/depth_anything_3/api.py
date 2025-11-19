@@ -239,6 +239,17 @@ class DepthAnything3(nn.Module, PyTorchModelHubMixin):
                         "fps": feat_vis_fps,
                     }
                 )
+            # Add COLMAP export parameters
+            if "colmap" in export_format:
+                if "colmap" not in export_kwargs:
+                    export_kwargs["colmap"] = {}
+                export_kwargs["colmap"].update(
+                    {
+                        "images": image,
+                        "conf_thresh_percentile": conf_thresh_percentile,
+                        "process_res_method": process_res_method,
+                    }
+                )
             self._export_results(prediction, export_format, export_dir, **export_kwargs)
 
         return prediction
