@@ -80,32 +80,33 @@ def check_memory_availability(required_gb: float = 2.0) -> tuple[bool, str]:
 
     The returned tuple is (is_available, message) with a human-friendly message.
     """
-    if not torch.cuda.is_available():
-        return False, "CUDA is not available"
+    try:
+        if not torch.cuda.is_available():
+            return False, "CUDA is not available"
 
-    mem_info = get_gpu_memory_info()
-    if mem_info is None:
-        return True, "Cannot check memory, proceeding anyway"
+        mem_info = get_gpu_memory_info()
+        if mem_info is None:
+            return True, "Cannot check memory, proceeding anyway"
 
-    if mem_info["free_gb"] < required_gb:
+        if mem_info["free_gb"] < required_gb:
+            return (
+                False,
+                (
+                    f"Insufficient GPU memory: {mem_info['free_gb']:.2f}GB available, "
+                    f"{required_gb:.2f}GB required. Total: {mem_info['total_gb']:.2f}GB, "
+                    f"Used: {mem_info['reserved_gb']:.2f}GB ({mem_info['utilization']:.1f}%)"
+                ),
+            )
+
         return (
-            False,
+            True,
             (
-                f"Insufficient GPU memory: {mem_info['free_gb']:.2f}GB available, "
-                f"{required_gb:.2f}GB required. Total: {mem_info['total_gb']:.2f}GB, "
-                f"Used: {mem_info['reserved_gb']:.2f}GB ({mem_info['utilization']:.1f}%)"
+                f"Memory check passed: {mem_info['free_gb']:.2f}GB available, "
+                f"{required_gb:.2f}GB required"
             ),
         )
-
-    return (
-        True,
-        (
-            f"Memory check passed: {mem_info['free_gb']:.2f}GB available, "
-            f"{required_gb:.2f}GB required"
-        ),
-    )
-
-
+    except Exception as e:
+        return True, f"Memory check failed: {e}, proceeding anyway"
 def estimate_memory_requirement(num_images: int, process_res: int) -> float:
     """Heuristic estimate for memory usage (GB) based on image count and resolution.
 
